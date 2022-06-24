@@ -1,5 +1,5 @@
 import '../styles/globals.css'
-import Toolbar from '../components/toolbar';
+import Toolbar from '../components/Toolbar';
 
 function MyApp({ Component, pageProps }) {
   return (
