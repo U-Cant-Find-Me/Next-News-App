@@ -1,44 +1,50 @@
 import { useRouter } from 'next/router';
-import React from 'react'
+import React from 'react';
+import Head from 'next/head';
 import styles from '../../styles/feed.module.css'
 
 const Feed = ({ pageNumber, articles }) => {
     const router = useRouter();
     // console.log(articles, pageNumber, totalResults);
     return (
-        <div className="page-contaier">
-            <div className={styles.main}>
-                {articles.map((articles, index) => (
-                    <div key={index} className={styles.post}>
-                        <h1 onClick={() => (window.location.href = articles.url)}>{articles.title}</h1>
-                        <p>{articles.description}</p>
-                        {!!articles.urlToImage && <img src={articles.urlToImage} />}
+        <>
+        <Head>
+            <title>{`News App Feed Page - ${pageNumber}`}</title>
+        </Head>
+            <div className="page-contaier">
+                <div className={styles.main}>
+                    {articles.map((articles, index) => (
+                        <div key={index} className={styles.post}>
+                            <h1 onClick={() => (window.location.href = articles.url)}>{articles.title}</h1>
+                            <p>{articles.description}</p>
+                            {!!articles.urlToImage && <img src={articles.urlToImage} />}
+                        </div>
+                    ))}
+                </div>
+
+                <div className={styles.paginator}>
+                    <div onClick={() => {
+                        if (pageNumber > 1) {
+                            router.push(`/feed/${pageNumber - 1}`)
+                        }
+                    }}
+                        className={pageNumber === 1 ? styles.disabled : styles.active}>
+                        Previous page
                     </div>
-                ))}
-            </div>
+                    <div>#{pageNumber}</div>
 
-            <div className={styles.paginator}>
-                <div onClick={() => {
-                    if (pageNumber > 1) {
-                        router.push(`/feed/${pageNumber - 1}`)
-                    }
-                }}
-                    className={pageNumber === 1 ? styles.disabled : styles.active}>
-                    Previous page
+                    <div onClick={() => {
+                        if (pageNumber < 20) {
+                            router.push(`/feed/${pageNumber + 1}`)
+                        }
+                    }}
+                        className={pageNumber === 20 ? styles.disabled : styles.active}>
+                        Next page
+                    </div>
                 </div>
-                <div>#{pageNumber}</div>
-                
-                <div onClick={() => {
-                    if (pageNumber < 20) {
-                        router.push(`/feed/${pageNumber + 1}`)
-                    }
-                }}
-                    className={pageNumber === 20 ? styles.disabled : styles.active}>
-                    Next page
-                </div>
-            </div>
 
-        </div>
+            </div>
+        </>
     )
 };
 
@@ -65,7 +71,7 @@ export const getServerSideProps = async pageContext => {
             }
         }
     }
-    
+
     return {
         props: {
             articles,
